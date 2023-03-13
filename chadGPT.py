@@ -43,7 +43,7 @@ async def support (ctx, member:discord.Member = None):
 
     embed = discord.Embed(title="Who Made This?", description = "", color = discord.Color.random())
     embed.set_author(name=f"{name}")
-    embed.add_field(name = "Creator", value = "IndianGrandpa")
+    embed.add_field(name = "Creator", value = "[IndianGrandpa](https://www.linkedin.com/in/vibu-vignesh-b6922b211/)")
     embed.add_field(name = "Co-Creator", value = "[Nuggetierer](https://twitter.com/NuggetiererReal)", inline = False)
     embed.set_footer(text = f"{name} Thanks for Supporting Us")
 
