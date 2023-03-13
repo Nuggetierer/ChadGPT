@@ -35,6 +35,19 @@ async def chad (ctx,input):
     await ctx.send(reply)
 
 @bot.command()
+async def chadEmbed (ctx,*,input):
+    # collect reply
+    reply=chadbot_initialiser(input)
+
+    #building the embed
+    embed = discord.Embed(title="ChadGPT", description="", color = discord.Color.random())
+    embed.add_field(name = "Prompt", value = input, inline=False)
+    embed.add_field(name = "Reply", value = reply, inline=False)
+    embed.set_footer(text= "Replies are not representative of OpenAIs model")
+
+    await ctx.send(embed = embed)
+
+@bot.command()
 async def support (ctx, member:discord.Member = None):
     if member == None:
         member = ctx.author
