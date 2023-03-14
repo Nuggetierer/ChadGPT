@@ -29,12 +29,18 @@ bot = commands.Bot(command_prefix = "$", intents = intents)
 async def on_ready():
     print("Bot is Live")
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(f"This command is on cooldown for {round(error.retry_after,2)} seconds!")
+
 @bot.command()
 async def chad (ctx,input):
     reply=chadbot_initialiser(input)
     await ctx.send(reply)
 
 @bot.command()
+@commands.cooldown(1,20, commands.BucketType.user)
 async def chadEmbed (ctx,*,input):
     # collect reply
     reply=chadbot_initialiser(input)
