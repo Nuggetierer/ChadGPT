@@ -11,16 +11,20 @@ import discord
 from discord.ext import commands, tasks
 
 # getting API Keys
+"""
+load_dotenv is a python package that allows to look into a .env file to get hidden keys or values
+"""
 load_dotenv()
 
 openai.api_key = os.getenv('openAIKey')
 Disc_TOKEN = os.getenv('discordKey')
 
+# initial prompt Message
 messages = [
     {"role": "system", "content": "You are a egoistic bot that reply sracastically."},
     ]
 
-##Discord
+# Discord
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix = "$", intents = intents)
@@ -29,16 +33,26 @@ bot = commands.Bot(command_prefix = "$", intents = intents)
 async def on_ready():
     print("Bot is Live")
 
+# command error messages
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send(f"This command is on cooldown for {round(error.retry_after,2)} seconds!")
 
+"""
+Basic ChadGPT call
+- Basis for future GPT calls
+"""
 @bot.command()
 async def chad (ctx,input):
     reply=chadbot_initialiser(input)
     await ctx.send(reply)
 
+"""
+ChadGPT call with Embed
+- Cooldown 20 seconds
+- Embed with Prompt and Reply
+"""
 @bot.command()
 @commands.cooldown(1,20, commands.BucketType.user)
 async def chadEmbed (ctx,*,input):
@@ -53,6 +67,11 @@ async def chadEmbed (ctx,*,input):
 
     await ctx.send(embed = embed)
 
+"""
+Support command to represent creators
+- Vibu Vignesh = IndianGrandpa
+- Teh Zhi Xian = Nuggetierer
+"""
 @bot.command()
 async def support (ctx, member:discord.Member = None):
     if member == None:
@@ -69,6 +88,12 @@ async def support (ctx, member:discord.Member = None):
     await ctx.send(embed = embed)
 
 # open AI
+"""
+Command to make a chadbot request
+
+Note: We may be expanding to different personality, may adjust the way personality is built by declaring system content
+at the start of the function instead of after this way we dont have to build message prompt first
+"""
 def chadbot_initialiser(input):
     if input:
         messages.append({"role": "user", "content": input})
@@ -76,6 +101,8 @@ def chadbot_initialiser(input):
             model="gpt-3.5-turbo", messages=messages
         )
         reply = chat.choices[0].message.content
+
+        # reminding chatGPT the context
         messages.append({"role": "assistant", "content": reply})
         messages.append({"role": "system", "content": "You are a egoistic bot that reply sracastically."})
         return reply
