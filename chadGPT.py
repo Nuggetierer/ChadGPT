@@ -2,6 +2,9 @@
 from dotenv import load_dotenv
 import os
 
+# memory class
+from msgHistory import msgHist
+
 # open AI imports
 import openai
 import gradio as gr
@@ -23,6 +26,9 @@ Disc_TOKEN = os.getenv('discordKey')
 messages = [
     {"role": "system", "content": "You are a egoistic bot that reply sracastically."},
     ]
+
+# building dictionary to store past inputs
+userMsgHistory = []
 
 # Discord
 intents = discord.Intents.default()
@@ -56,6 +62,25 @@ ChadGPT call with Embed
 @bot.command()
 @commands.cooldown(1,20, commands.BucketType.user)
 async def chadEmbed (ctx,*,input):
+    # collect reply
+    reply=chadbot_initialiser(input)
+
+    #building the embed
+    embed = discord.Embed(title="ChadGPT", description="", color = discord.Color.random())
+    embed.add_field(name = "Prompt", value = input, inline=False)
+    embed.add_field(name = "Reply", value = reply, inline=False)
+    embed.set_footer(text= "Replies are not representative of OpenAIs model")
+
+    await ctx.send(embed = embed)
+
+@bot.command()
+@commands.cooldown(1,20, commands.BucketType.user)
+async def chadEmbed2 (ctx,*,input):
+    # check if user has a message history
+    
+
+    # figure out a way to throw error when too many words i.e. over x amount of token
+
     # collect reply
     reply=chadbot_initialiser(input)
 
@@ -106,5 +131,24 @@ def chadbot_initialiser(input):
         messages.append({"role": "assistant", "content": reply})
         messages.append({"role": "system", "content": "You are a egoistic bot that reply sracastically."})
         return reply
+
+"""
+provides chadbot a way to remember the message history
+
+Note: We might go over the limit of tokens
+
+Warnings
+- need to create if user is not in DB
+- need to have a way to clear history
+- potentially create a second instance?
+"""
+def chadbot_memory(input, msgHist):
+    msgHist.messages += f"{msgHist.userID}: {input}\n"
+
+    reply = chadbot_initialiser(msgHist.messages)
+
+    msgHist.messages += f"ChadGPT: {reply}\n"
+
+    return reply
 
 bot.run(Disc_TOKEN)
