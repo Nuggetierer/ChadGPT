@@ -43,10 +43,10 @@ async def on_command_error(ctx, error):
 Basic ChadGPT call
 - Basis for future GPT calls
 """
-@bot.command()
-async def chad (ctx,input):
-    reply=chadbot_initialiser(input)
-    await ctx.send(reply)
+# @bot.command()
+# async def chad (ctx,input):
+#     reply=chadbot_initialiser(input)
+#     await ctx.send(reply)
 
 """
 ChadGPT call with Embed
