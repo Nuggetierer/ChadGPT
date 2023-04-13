@@ -76,8 +76,13 @@ async def chadEmbed (ctx,*,input):
 @bot.command()
 @commands.cooldown(1,20, commands.BucketType.user)
 async def chadEmbed2 (ctx,*,input):
-    # check if user has a message history
-    
+    # check if user has a message history (not sure how to properly check or even store the value with unique name)
+    if ctx.author.id in userMsgHistory:
+        messages = userMsgHistory[ctx.author.id]
+    else:
+        # create a message history
+        messages = msgHist(ctx.author.id, ctx.author.display_name,input)
+        userMsgHistory.append(messages)
 
     # figure out a way to throw error when too many words i.e. over x amount of token
 
@@ -89,6 +94,8 @@ async def chadEmbed2 (ctx,*,input):
     embed.add_field(name = "Prompt", value = input, inline=False)
     embed.add_field(name = "Reply", value = reply, inline=False)
     embed.set_footer(text= "Replies are not representative of OpenAIs model")
+
+    # replace the msg history in storage
 
     await ctx.send(embed = embed)
 
